@@ -1,10 +1,15 @@
 const Router = require('express').Router
 const createUserController = require('./controllers/users.controller')
+const createPasteController = require('./controllers/pastes.controller')
+
+
 
 
 async function createRouter(db) {
     const router = Router()
     const UserController = createUserController(db)
+    const PasteController = createPasteController(db)
+
 
     async function isAuth(req, res, next) {
         console.log('isAuth is called now')
@@ -27,6 +32,20 @@ async function createRouter(db) {
             message : "Hello World"
         });
     })
+
+
+    router.get('/paste', (req, res) => {
+        res.render('paste.twig', {
+            message : "Hello World"
+        });
+    })
+   
+    router.post('/pastAno', async function(req, res){
+        const pastAnoResult = await PasteController.createAnoPaste(req.body)
+        return res.json(pastAnoResult)
+
+    })
+
 
     router.post('/signup', async function(req, res) {
         const signupResult = await UserController.signup(req.body)
