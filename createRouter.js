@@ -46,6 +46,11 @@ async function createRouter(db) {
 
     })
 
+    router.get('/createUser', (req, res) => {
+        res.render('createUserForm.twig', {}
+        );
+    })
+
 
     router.post('/signup', async function(req, res) {
         const signupResult = await UserController.signup(req.body)
