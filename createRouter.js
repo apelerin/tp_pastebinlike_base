@@ -28,13 +28,12 @@ async function createRouter(db) {
     /* Ceci est le block de code a dupliquer pour continuer l'app */
     router.get('/', (req, res) => {
         res.render('index.twig', {
-            message : "Hello World"
         });
     })
 
     router.get('/paste', (req, res) => {
-        res.render('paste.twig', {
-            message : "Hello World"
+        res.render('index.twig', {
+            templateVar : 'paste.twig'
         });
         
     })
@@ -46,8 +45,9 @@ async function createRouter(db) {
     })
 
     router.get('/signup', (req, res) => {
-        res.render('createUserForm.twig', {}
-        );
+        res.render('index.twig', {
+            templateVar: 'createUserForm.twig'
+        });
     })
 
     router.post('/signup', async function(req, res) {
@@ -56,7 +56,9 @@ async function createRouter(db) {
     })
 
     router.get('/login', (req, res) => {
-        res.render('loginForm.twig', {}
+        res.render('index.twig', {
+            templateVar : 'loginForm.twig'
+        }
         );
     })
 
@@ -88,8 +90,8 @@ async function createRouter(db) {
     router.get('/:slug', async function (req, res) {
         console.log(req.params.slug)
         const reponse = await PasteViewController.views(req.params)
-        res.render('pastecontent.twig', {
-            message : reponse
+        res.render('index.twig', {
+            templateVar : 'pastecontent.twig'
         });
     })
     

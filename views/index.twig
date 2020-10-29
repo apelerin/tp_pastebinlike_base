@@ -9,5 +9,9 @@
     <li><a href="/login">Login</a></li>
 </ul>
 
+{% if templateVar is not null and templateVar is defined %}
+    {% include templateVar %}
+{% endif %}
+
 </body>
 </html>
