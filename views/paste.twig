@@ -4,15 +4,20 @@
         <title>Paste Bin like</title>
     </head>
 <body>
-    <form>
+    <form action="/pasteAno" method="POST">
         <div>
             <label for="title">title :</label>
-            <input type=''>
+            <input type='text' name="title">
+        </div>
+        
+        <div>
+            <label for="content">Content :</label>
+            <input type="text" name="content">
         </div>
 
-
-
-
+        <div>
+            <button type ="submit">submit</button>
+        </div>
 
     </form>
 

@@ -40,7 +40,7 @@ async function createRouter(db) {
         });
     })
    
-    router.post('/pastAno', async function(req, res){
+    router.post('/pasteAno', async function(req, res){
         const pastAnoResult = await PasteController.createAnoPaste(req.body)
         return res.json(pastAnoResult)
 
