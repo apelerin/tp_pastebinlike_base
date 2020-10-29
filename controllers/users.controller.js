@@ -12,7 +12,7 @@ module.exports = function createUserController(db) {
                 return { error: 'User already exists' }
             }
 
-            password = hashing(password);
+            //password = hashing(password);
             await users.insertOne({
                 email: email, pseudo: pseudo, password: password
             })
@@ -23,8 +23,7 @@ module.exports = function createUserController(db) {
         async login({ email, password }) {
             const user = await users.findOne({ email: email })
 
-            var hash =
-            password = hashing(password);
+            //password = hashing(password);
 
             if (!(user && user.password === password)) {
                 return { error: 'Bad credentials' }

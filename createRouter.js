@@ -62,6 +62,11 @@ async function createRouter(db) {
         return res.json(signupResult)
     })
 
+    router.get('/log-in', (req, res) => {
+        res.render('loginForm.twig', {}
+        );
+    })
+
     router.post('/login', async function(req, res) {
         const loginResult = await UserController.login(req.body)
         return res.json(loginResult)
