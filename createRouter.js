@@ -1,6 +1,8 @@
 const Router = require('express').Router
 const createUserController = require('./controllers/users.controller')
 const createPasteController = require('./controllers/pastes.controller')
+const createPasteViewController = require('./controllers/pastesViews.controller')
+
 
 
 
@@ -9,6 +11,8 @@ async function createRouter(db) {
     const router = Router()
     const UserController = createUserController(db)
     const PasteController = createPasteController(db)
+    const PasteViewController = createPasteViewController(db)
+
 
 
     async function isAuth(req, res, next) {
@@ -38,6 +42,7 @@ async function createRouter(db) {
         res.render('paste.twig', {
             message : "Hello World"
         });
+        
     })
    
     router.post('/pasteAno', async function(req, res){
@@ -68,6 +73,7 @@ async function createRouter(db) {
             isAuth: req.isAuth,
         })
     })
+/*
 
     router.get('/:slug', isAuth, async function (req, res) {
         console.log(req.params.slug)
@@ -75,6 +81,14 @@ async function createRouter(db) {
         return res.json({ slug: req.params.slug })
     })
 
+*/
+    router.get('/:slug', async function (req, res) {
+        console.log(req.params.slug)
+        const reponse = await PasteViewController.views(req.params)
+        res.render('pastecontent.twig', {
+            message : reponse
+        });
+    })
     
     return router
 }
