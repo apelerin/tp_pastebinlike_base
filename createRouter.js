@@ -51,18 +51,20 @@ async function createRouter(db) {
 
     })
 
-    router.get('/createUser', (req, res) => {
+
+
+
+    router.get('/signup', (req, res) => {
         res.render('createUserForm.twig', {}
         );
     })
-
 
     router.post('/signup', async function(req, res) {
         const signupResult = await UserController.signup(req.body)
         return res.json(signupResult)
     })
 
-    router.get('/log-in', (req, res) => {
+    router.get('/login', (req, res) => {
         res.render('loginForm.twig', {}
         );
     })
