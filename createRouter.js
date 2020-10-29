@@ -4,16 +4,11 @@ const createPasteController = require('./controllers/pastes.controller')
 const createPasteViewController = require('./controllers/pastesViews.controller')
 
 
-
-
-
 async function createRouter(db) {
     const router = Router()
     const UserController = createUserController(db)
     const PasteController = createPasteController(db)
     const PasteViewController = createPasteViewController(db)
-
-
 
     async function isAuth(req, res, next) {
         console.log('isAuth is called now')
@@ -37,7 +32,6 @@ async function createRouter(db) {
         });
     })
 
-
     router.get('/paste', (req, res) => {
         res.render('paste.twig', {
             message : "Hello World"
@@ -50,9 +44,6 @@ async function createRouter(db) {
         return res.json(pastAnoResult)
 
     })
-
-
-
 
     router.get('/signup', (req, res) => {
         res.render('createUserForm.twig', {}
