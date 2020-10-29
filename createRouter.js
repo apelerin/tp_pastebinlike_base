@@ -10,19 +10,17 @@ async function createRouter(db) {
     const PasteController = createPasteController(db)
     const PasteViewController = createPasteViewController(db)
 
-    async function isAuth(req, res, next) {
+    function isAuth(req) {
         console.log('isAuth is called now')
-        if (req.headers['authorization']) {
-            const token = req.headers['authorization']
+        if (req.cookies.authToken) {
+            const token = req.cookies.authToken
             console.log('token is', token)
-            const result = await db.collection('users').findOne({ authToken: token })
+            const result = db.collection('users').findOne({ authToken: token })
             if (result) {
-                req.isAuth = true
-                req.authUser = result
+                return true
             }
         }
-
-        next();
+        return false
     }
 
     /* Ceci est le block de code a dupliquer pour continuer l'app */
@@ -32,16 +30,27 @@ async function createRouter(db) {
     })
 
     router.get('/paste', (req, res) => {
-        res.render('index.twig', {
-            templateVar : 'paste.twig'
-        });
-        
+        if (!isAuth(req)) {
+            res.render('index.twig', {
+                templateVar : 'paste_anonymous.twig'
+            });
+        } else {
+            return res.json({test: 'test'})
+        }
+    })
+
+    router.get('/cleanCookies', (req, res) => {
+        res.cookie('authToken', 'dirtyCookie', { maxAge: 1, httpOnly: true });
+        return res.json({state: 'success'})
     })
    
-    router.post('/pasteAno', async function(req, res){
-        const pastAnoResult = await PasteController.createAnoPaste(req.body)
-        return res.json(pastAnoResult)
-
+    router.post('/paste', async function(req, res){
+        if (!req.isAuth) {
+            const pastAnoResult = await PasteController.createAnoPaste(req.body)
+            return res.json(pastAnoResult)
+        } else {
+            return res.json({test: 'test'})
+        }
     })
 
     router.get('/signup', (req, res) => {
@@ -64,11 +73,12 @@ async function createRouter(db) {
 
     router.post('/login', async function(req, res) {
         const loginResult = await UserController.login(req.body)
+        res.cookie('authToken',loginResult.authToken, { maxAge: 900000, httpOnly: true });
         return res.json(loginResult)
     })
 
-    router.get('/my-pastes', isAuth, async function (req, res) {
-        if (!req.isAuth) {
+    router.get('/my-pastes', async function (req, res) {
+        if (!isAuth) {
             return res.status(401).end();
         }
         const mypastes = await db.collection('pastes').find({ 'owner.id': req.authUser._id }, 'title slug createdAt').toArray()
