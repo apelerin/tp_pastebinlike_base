@@ -41,12 +41,14 @@ async function createRouter(db) {
     })
 
     router.post('/paste', async function(req, res){
+        var pastResult
         if (!isAuth(req)) {
-            const pastResult = await PasteController.createAnoPaste(req.body)
+            pastResult = await PasteController.createAnoPaste(req.body)
         } else {
-            const pastResult = await PasteController.createUserPaste(req.body)
+            pastResult = await PasteController.createUserPaste(req.body)
         }
         res.render('index.twig', {
+            success: "The paste has been successfully created, the slug is: " + pastResult.slug
         });
     })
 
@@ -102,9 +104,10 @@ async function createRouter(db) {
 
     router.get('/:slug', async function (req, res) {
         console.log(req.params.slug)
-        const reponse = await PasteViewController.views(req.params)
+        const response = await PasteViewController.views(req.params)
         res.render('index.twig', {
-            templateVar : 'pastecontent.twig'
+            templateVar : 'pastecontent.twig',
+            response: response
         });
     })
     

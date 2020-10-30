@@ -21,7 +21,7 @@ module.exports = function createPasteController(db) {
             await pastes.insertOne({
                 title: title, content: content, slug: link
             })
-           return { success: true }
+            return {slug: link}
         },
 
         async createUserPaste ({title, content, isPublic}, userToken) {
@@ -30,7 +30,7 @@ module.exports = function createPasteController(db) {
             await pastes.insertOne({
                 title: title, content: content, isPublic: isPublic, slug: link, userId : user._id
             })
-            return { success: true }
+            return {slug: link}
         }
     }
 
