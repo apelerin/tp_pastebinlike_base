@@ -46,6 +46,8 @@ async function createRouter(db) {
         } else {
             const pastResult = await PasteController.createUserPaste(req.body)
         }
+        res.render('index.twig', {
+        });
     })
 
     router.get('/signup', (req, res) => {
