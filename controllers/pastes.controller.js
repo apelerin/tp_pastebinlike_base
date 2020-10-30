@@ -19,7 +19,12 @@ module.exports = function createPasteController(db) {
         async createAnoPaste ({ title, content }) {
             var link = linkrand();
             await pastes.insertOne({
-                title: title, content: content, slug: link
+                title: title,
+                content: content,
+                isPublic: true,
+                slug: link,
+                userId : 'Anonymous',
+                createdAt: new Date()
             })
             return {slug: link}
         },
@@ -28,12 +33,14 @@ module.exports = function createPasteController(db) {
             var link = linkrand();
             var user =  await users.findOne({ authToken: userToken })
             await pastes.insertOne({
-                title: title, content: content, isPublic: isPublic, slug: link, userId : user._id
+                title: title,
+                content: content,
+                isPublic: isPublic,
+                slug: link,
+                userId : user._id,
+                createdAt: new Date()
             })
             return {slug: link}
         }
     }
-
-    
-
 }
