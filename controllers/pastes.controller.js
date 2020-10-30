@@ -6,8 +6,13 @@ module.exports = function createPasteController(db) {
      
     function linkrand() {
         var length = 5;
+<<<<<<< HEAD
         var link = '';
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+=======
+        var link          = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
+>>>>>>> fix randlink
         var charactersLength = characters.length;
         for ( var i = 0; i < length; i++ ) {
            link += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -21,8 +26,14 @@ module.exports = function createPasteController(db) {
             await pastes.insertOne({
                 title: title, content: content, slug: link
             })
-           return { success: true }
+<<<<<<< HEAD
+            return {slug: link}
         },
+=======
+           return { success: true }
+        }
+        
+>>>>>>> fix randlink
 
         async createUserPaste ({title, content, isPublic}, userToken) {
             var link = linkrand();
@@ -30,7 +41,7 @@ module.exports = function createPasteController(db) {
             await pastes.insertOne({
                 title: title, content: content, isPublic: isPublic, slug: link, userId : user._id
             })
-            return { success: true }
+            return {slug: link}
         }
     }
 

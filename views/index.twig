@@ -15,5 +15,9 @@
     {% include templateVar %}
 {% endif %}
 
+{% if success is not null and success is defined %}
+    {{ success }}
+{% endif %}
+
 </body>
 </html>
