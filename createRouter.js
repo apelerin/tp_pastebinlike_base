@@ -76,7 +76,8 @@ async function createRouter(db) {
     router.post('/login', async function(req, res) {
         const loginResult = await UserController.login(req.body)
         res.cookie('authToken',loginResult.authToken, { maxAge: 900000, httpOnly: true });
-        return res.json(loginResult)
+        //return res.json(loginResult)
+        res.redirect('/')
     })
 
     router.get('/my-pastes', async function (req, res) {
@@ -104,12 +105,16 @@ async function createRouter(db) {
 
     router.get('/cleanCookies', (req, res) => {
         res.cookie('authToken', 'dirtyCookie', { maxAge: 1, httpOnly: true });
-        return res.json({state: 'success'})
+        res.redirect('/')
     })
 
     router.get('/:slug', async function (req, res) {
-        console.log(req.params.slug)
         const response = await PasteViewController.views(req.params)
+        console.log(isAuth(req))
+        console.log(response)
+        if (!response || (response.isPublic === false && !isAuth(req))) {
+            return res.status(401).end();
+        }
         res.render('index.twig', {
             templateVar : 'pastecontent.twig',
             response: response,

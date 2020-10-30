@@ -2,9 +2,9 @@
     {% if pastes is not null and pastes is defined %}
         {% for paste in pastes %}
             <div class="paste">
-                <h3>{{ paste.title }}</h3>
-                <p class="content">{{ paste.content }}</p>
-                <p>{{ paste.userId }}</p>
+                <h3>Titre: {{ paste.title }}</h3>
+                <p>{{ paste.content }}</p>
+                <p>{{ paste.createdAt }}</p>
             </div>
         {% endfor %}
     {% else %}
