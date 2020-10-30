@@ -26,7 +26,7 @@ module.exports = function createPasteController(db) {
 
         async createUserPaste ({title, content, isPublic}, userToken) {
             var link = linkrand();
-            var user = users.findOne({ authToken: userToken })
+            var user =  await users.findOne({ authToken: userToken })
             await pastes.insertOne({
                 title: title, content: content, isPublic: isPublic, slug: link, userId : user._id
             })
