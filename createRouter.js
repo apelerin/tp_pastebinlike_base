@@ -22,21 +22,23 @@ async function createRouter(db) {
         return false
     }
 
-    /* Ceci est le block de code a dupliquer pour continuer l'app */
+
     router.get('/', (req, res) => {
         res.render('index.twig', {
+            isAuth: req.cookies.authToken
         });
     })
 
     router.get('/paste', (req, res) => {
-        var templeVar
+        var templateVar
         if (!isAuth(req)) {
             templateVar = 'paste_anonymous.twig'
         } else {
             templateVar = 'paste_connected.twig'
         }
         res.render('index.twig', {
-            templateVar : templateVar
+            templateVar : templateVar,
+            isAuth: isAuth(req)
         });
     })
 
@@ -45,7 +47,7 @@ async function createRouter(db) {
         if (!isAuth(req)) {
             pastResult = await PasteController.createAnoPaste(req.body)
         } else {
-            pastResult = await PasteController.createUserPaste(req.body)
+            pastResult = await PasteController.createUserPaste(req.body, req.cookies.authToken)
         }
         res.render('index.twig', {
             success: "The paste has been successfully created, the slug is: " + pastResult.slug
@@ -54,7 +56,8 @@ async function createRouter(db) {
 
     router.get('/signup', (req, res) => {
         res.render('index.twig', {
-            templateVar: 'createUserForm.twig'
+            templateVar: 'createUserForm.twig',
+            isAuth: isAuth(req)
         });
     })
 
@@ -65,9 +68,9 @@ async function createRouter(db) {
 
     router.get('/login', (req, res) => {
         res.render('index.twig', {
-            templateVar : 'loginForm.twig'
-        }
-        );
+            templateVar : 'loginForm.twig',
+            isAuth: isAuth(req)
+        });
     })
 
     router.post('/login', async function(req, res) {
@@ -80,12 +83,14 @@ async function createRouter(db) {
         if (!isAuth(req)) {
             return res.status(401).end();
         }
-        const mypastes = await db.collection('pastes').find({ 'owner.id': req.authUser._id }, 'title slug createdAt').toArray()
+        const user = await db.collection('users').findOne({authToken: req.cookies.authToken})
+        const mypastes = await db.collection('pastes').find({ 'userId': user._id }).toArray()
 
-        return res.json({
-            list: mypastes,
-            isAuth: isAuth(req),
-        })
+        res.render('index.twig', {
+            templateVar : 'pastecontent.twig',
+            pastes: mypastes,
+            isAuth: isAuth(req)
+        });
     })
 /*
 
@@ -107,11 +112,12 @@ async function createRouter(db) {
         const response = await PasteViewController.views(req.params)
         res.render('index.twig', {
             templateVar : 'pastecontent.twig',
-            response: response
+            response: response,
+            isAuth: isAuth(req)
         });
     })
-    
     return router
 }
+
 
 module.exports = createRouter

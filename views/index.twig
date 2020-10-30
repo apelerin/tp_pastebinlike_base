@@ -9,6 +9,9 @@
     <li><a href="/login">Login</a></li>
     <li><a href="/paste">Create a Paste</a></li>
     <li><a href="/cleanCookies">Clear Cookies</a></li>
+    {% if isAuth %}
+        <li><a href="/my-pastes">My pastes</a></li>
+    {% endif %}
 </ul>
 
 {% if templateVar is not null and templateVar is defined %}

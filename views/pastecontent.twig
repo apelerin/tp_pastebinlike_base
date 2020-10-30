@@ -1,11 +1,23 @@
 <div>
-    <h1>Title</h1>
-    {{ response.title }}
-    <h1>Content</h1>
-    {{ response.content }}
-<<<<<<< HEAD
-    <p>theo</p>
-=======
-    
->>>>>>> theo
+    {% if pastes is not null and pastes is defined %}
+        {% for paste in pastes %}
+            <div class="paste">
+                <h3>{{ paste.title }}</h3>
+                <p class="content">{{ paste.content }}</p>
+                <p>{{ paste.userId }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="paste">
+            {{ response.title }}
+            {{ response.content }}
+        </div>
+    {% endif %}
+
 </div>
+
+<style>
+    .paste {
+        border: black solid;
+    }
+</style>
