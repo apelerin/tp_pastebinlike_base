@@ -11,7 +11,6 @@ async function createRouter(db) {
     const PasteViewController = createPasteViewController(db)
 
     function isAuth(req) {
-        console.log('isAuth is called now')
         if (req.cookies.authToken) {
             const token = req.cookies.authToken
             console.log('token is', token)
@@ -30,26 +29,22 @@ async function createRouter(db) {
     })
 
     router.get('/paste', (req, res) => {
+        var templeVar
         if (!isAuth(req)) {
-            res.render('index.twig', {
-                templateVar : 'paste_anonymous.twig'
-            });
+            templateVar = 'paste_anonymous.twig'
         } else {
-            return res.json({test: 'test'})
+            templateVar = 'paste_connected.twig'
         }
+        res.render('index.twig', {
+            templateVar : templateVar
+        });
     })
 
-    router.get('/cleanCookies', (req, res) => {
-        res.cookie('authToken', 'dirtyCookie', { maxAge: 1, httpOnly: true });
-        return res.json({state: 'success'})
-    })
-   
     router.post('/paste', async function(req, res){
-        if (!req.isAuth) {
-            const pastAnoResult = await PasteController.createAnoPaste(req.body)
-            return res.json(pastAnoResult)
+        if (!isAuth(req)) {
+            const pastResult = await PasteController.createAnoPaste(req.body)
         } else {
-            return res.json({test: 'test'})
+            const pastResult = await PasteController.createUserPaste(req.body)
         }
     })
 
@@ -78,14 +73,14 @@ async function createRouter(db) {
     })
 
     router.get('/my-pastes', async function (req, res) {
-        if (!isAuth) {
+        if (!isAuth(req)) {
             return res.status(401).end();
         }
         const mypastes = await db.collection('pastes').find({ 'owner.id': req.authUser._id }, 'title slug createdAt').toArray()
 
         return res.json({
             list: mypastes,
-            isAuth: req.isAuth,
+            isAuth: isAuth(req),
         })
     })
 /*
@@ -97,6 +92,12 @@ async function createRouter(db) {
     })
 
 */
+
+    router.get('/cleanCookies', (req, res) => {
+        res.cookie('authToken', 'dirtyCookie', { maxAge: 1, httpOnly: true });
+        return res.json({state: 'success'})
+    })
+
     router.get('/:slug', async function (req, res) {
         console.log(req.params.slug)
         const reponse = await PasteViewController.views(req.params)

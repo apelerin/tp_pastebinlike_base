@@ -2,6 +2,7 @@
 module.exports = function createPasteController(db) {
 
     const pastes = db.collection('pastes')
+    const users = db.collection('users')
      
     function linkrand() {
         var length = 5;
@@ -21,8 +22,16 @@ module.exports = function createPasteController(db) {
                 title: title, content: content, slug: link
             })
            return { success: true }
-        }
+        },
 
+        async createUserPaste ({title, content, isPublic}, userToken) {
+            var link = linkrand();
+            var user = users.findOne({ authToken: userToken })
+            await pastes.insertOne({
+                title: title, content: content, isPublic: isPublic, slug: link, userId : user._id
+            })
+            return { success: true }
+        }
     }
 
     
